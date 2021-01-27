@@ -77,8 +77,8 @@ def random_walk(initial_pos):
         shift = shift[-(lag+1):]
         de = shift[-1] - shift[0] # find difference between current and value from lag timesteps ago
         time_constant = 1 + k * de / dt
-        if time_constant < 0.1:
-            time_constant = 0.1 # prevents negative half lives by forcing time_constant to be 0.1 if below threshold value of 0.1
+        if time_constant < dt:
+            time_constant = dt # prevents negative half lives by forcing time_constant to be dt if below threshold value of dt
         walk_prob = walk_probability(time_constant) # probability that a walk actually takes place, or rather that a tumble does NOT take place   
         if walk_prob > np.random.random() : # condition for walk
             xnew, ynew = x + vx * dt, y + vy * dt # walk in direction of vel
@@ -128,7 +128,7 @@ def plot_trajectories(initial_pos): # plotting function, called upon code start 
                 initial_pos = [x_extent*(np.random.random()-0.5),y_extent*(np.random.random()-0.5)]
             xs_array[j] = random_walk(initial_pos)[:,0]
             ys_array[j] = random_walk(initial_pos)[:,1]
-            time_array[j] = j * 0.1 # stores accumulated time in seconds
+            time_array[j] = j * dt # stores accumulated time in seconds
             displ_start_squared_array[j] = (xs_array[j]-xs_array[j][0])**2 + (ys_array[j]-ys_array[j][0])**2 # displacement from starting point
             MSD_start = np.average(displ_start_squared_array, axis=0) # averages over all bacteria at a given time to give mean squared displacement
             displ_origin_squared_array[j] = (xs_array[j]-0)**2 + (ys_array[j]-0)**2 # displacement from origin (where food source is located)
