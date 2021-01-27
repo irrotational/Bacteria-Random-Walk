@@ -5,6 +5,6 @@ The code has sensible default values and thus can simply be run as:
 
 python3 Bacteria_Simulation.py
 
-![ScreenShot](./example_walk.pdf)
+![ScreenShot](./Bacteria-Random-Walk/example_walk.pdf)
 
 
