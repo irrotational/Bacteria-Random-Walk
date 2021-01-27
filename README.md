@@ -7,9 +7,11 @@ python3 Bacteria_Simulation.py
 
 This will produce a figure that looks like:
 
+<p> <br> </p>
 <p>
-    <img src="./example_walk.png" width="575" height="450" />
+    <img src="./example_walk.png" width="550" height="425" />
 </p>
+<p> <br> </p>
 
 Alternatively, various arguments can be passed, e.g:
 
