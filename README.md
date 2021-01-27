@@ -6,7 +6,7 @@ The code has sensible default values and thus can simply be run as:
 python3 Bacteria_Simulation.py
 
 <p>
-    <img src="./example_walk.pdf" width="220" height="240" />
+    <img src="./Bacteria-Random-Walk/example_walk.pdf" width="220" height="240" />
 </p>
 
 
