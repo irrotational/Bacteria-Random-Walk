@@ -23,7 +23,7 @@ parser.add_argument('-initial_speed',type=float,default=1,help='Initial velocity
 parser.add_argument('-lag',type=int,default=9,help='Lag.')
 parser.add_argument('-x_extent',type=int,default=50,help='x_extent')
 parser.add_argument('-y_extent',type=int,default=50,help='y_extent')
-parser.add_argument('-probability_function',type=str,default='exponential',help='Prob func.')
+parser.add_argument('-probability_function',type=str,default='exponential',help='Probability function to determine chance of changing direction. \'exponential\', \'gaussian\', \'fractional\' or \'lorentzian\'.')
 args=parser.parse_args()
 
 dt = args.dt
@@ -48,13 +48,13 @@ def energy_density(r): # energy density function
 
 def walk_probability(time_constant):
     '''Calculate probability that a walk event takes place (i.e. NOT a tumble), using the user's specified probability function.'''
-    if probability_function == 'exponential':
+    if probability_function.lower() == 'exponential':
         walk_prob = np.exp(-dt/time_constant)
-    elif probability_function == 'gaussian':
+    elif probability_function.lower() == 'gaussian':
         walk_prob = np.exp( -(dt/time_constant)**2 )
-    elif probability_function == 'fractional':
+    elif probability_function.lower() == 'fractional':
         walk_prob = 1 / ( 1 + (dt/time_constant) )
-    elif probability_function == 'lorentzian':
+    elif probability_function.lower() == 'lorentzian':
         walk_prob = 1 / ( 1 + (dt/time_constant)**2 )
     else:
         print('ERROR: Specified probability function not recognised.')
