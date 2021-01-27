@@ -15,14 +15,14 @@ plt.rcParams.update({"text.usetex": True,"font.family": "sans-serif","font.sans-
 
 parser=argparse.ArgumentParser()
 parser.add_argument('-dt',type=float,default=0.1,help='Step size in seconds.')
-parser.add_argument('-k',type=float,default=0.2,help='Walk penalty. walk_probability = probability_function(dt/1 + k * de / dt), so larger k => more sensitive to changes in energy.')
+parser.add_argument('-k',type=float,default=0.2,help='Walk penalty. walk_probability = probability_function( dt/(1 + k * de / dt) ), so larger k => more sensitive to changes in energy.')
 parser.add_argument('-num_bacteria',type=int,default=25,help='Number of bacteria to simulate.')
 parser.add_argument('-timesteps',type=int,default=1000,help='Number of timesteps for simulation.')
-parser.add_argument('-initial_pos',type=float,nargs=2,default=None,help='Starting position for bacteria. Default is to choose starting positions randomly.')
-parser.add_argument('-initial_speed',type=float,default=1,help='Initial velocity magnitude.')
-parser.add_argument('-lag',type=int,default=9,help='Lag.')
-parser.add_argument('-x_extent',type=int,default=50,help='x_extent')
-parser.add_argument('-y_extent',type=int,default=50,help='y_extent')
+parser.add_argument('-initial_pos',type=float,nargs=2,default=None,help='Specify a common starting position for all bacteria (x,y). Provide two space-separated values, e.g. \'24 30\' Default is to choose starting positions randomly for each bacterium.')
+parser.add_argument('-speed',type=float,default=1,help='Velocity magnitude (will be the same for all timesteps, i.e. no damping).')
+parser.add_argument('-lag',type=int,default=9,help='Lag. Compare present energy with the energy from lag timesteps ago. Used to compute de / dt.')
+parser.add_argument('-x_extent',type=int,default=50,help='x_extent of simulation plot.')
+parser.add_argument('-y_extent',type=int,default=50,help='y_extent of simulation plot.')
 parser.add_argument('-probability_function',type=str,default='exponential',help='Probability function to determine chance of changing direction. \'exponential\', \'gaussian\', \'fractional\' or \'lorentzian\'.')
 args=parser.parse_args()
 
@@ -31,7 +31,7 @@ k = args.k
 num_bacteria = args.num_bacteria
 timesteps = args.timesteps
 initial_pos = args.initial_pos
-initial_speed = args.initial_speed
+speed = args.speed
 lag = args.lag
 x_extent = args.x_extent
 y_extent = args.y_extent
@@ -65,7 +65,7 @@ def random_walk(initial_pos):
     r_array = np.zeros((timesteps, 2)) # array of zeros of shape (timesteps, 2), i.e. to hold timesteps occurences of (x,y) coordinate tuples
     r = initial_pos
     angle_rand = np.random.random() * 2 * np.pi # generates a random angle between 0 and 2pi, here used to assign initial velocity randomly
-    initial_vel = (initial_speed*np.cos(angle_rand), initial_speed*np.sin(angle_rand)) # Random starting velociy of magnitude initial_speed
+    initial_vel = (speed*np.cos(angle_rand), speed*np.sin(angle_rand)) # Random starting velociy of magnitude speed
     vel = initial_vel # Initialise vel
     shift = (lag+1) * [0] # shift register array to hold current and historical values of energy density function
     for i in range (timesteps):
@@ -95,7 +95,7 @@ N_POINTS = 50
 dx = (x1-x0)/N_POINTS
 dy = (y1-y0)/N_POINTS
 
-def plot_trajectories(initial_pos): # plotting function, called upon code start to produce the three plots
+def plot_trajectories(initial_pos): # run simulation + plot
     plt.figure()
     plt.subplots_adjust(hspace=0.,wspace=0.)
     y_axis = np.arange(y0,y1,dy)
@@ -145,9 +145,9 @@ def plot_trajectories(initial_pos): # plotting function, called upon code start 
     plt.title('Squared Displacements Vs Time', fontsize=14)
     plt.xlabel('Elapsed Time (seconds)', fontsize=14), plt.ylabel('MSD (microns)', fontsize=14)
     plt.plot(time_array, MSD_start, label='MSD from Starting Point', color='m') # mean squared displacement from starting point Vs time
-    plt.plot(time_array, MSD_origin, label='MSD from Food Source') # mean squared displacement from the origin (0,0), which is the point of greatest energy density
-    plt.legend(loc=7) # gives the plot a legend
-    plt.tight_layout() # prevents overlapping of plots/axis labels
+    plt.plot(time_array, MSD_origin, label='MSD from Food Source') # mean squared displacement from origin (where food source is located) Vs time
+    plt.legend(loc=7)
+    plt.tight_layout()
     plt.show()
 
 plot_trajectories(initial_pos)
